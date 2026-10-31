@@ -39,7 +39,8 @@ jobs:
       - run: npm ci
       - run: npm test
       - run: npm run test:local
-      - name: The input schema is what the Apify CLI accepts
+      - name: The input schema is what the Apify CLI accepts (the CLI itself needs Node 22)
+        if: matrix.node == '22'
         run: npx -y apify-cli@1.11.0 validate-schema .actor/input_schema.json
 
   docker:
