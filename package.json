@@ -1,0 +1,25 @@
+{
+  "name": "faxforagents-send-a-fax",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Apify Actor that sends one fax through the Fax for Agents API and waits for the carrier's outcome.",
+  "license": "MIT",
+  "homepage": "https://faxforagents.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/faxforagents/apify-actor.git"
+  },
+  "type": "module",
+  "main": "src/main.js",
+  "engines": {
+    "node": ">=20"
+  },
+  "scripts": {
+    "start": "node src/main.js",
+    "test": "node --test test/*.test.js",
+    "test:local": "node test/run-local.js"
+  },
+  "dependencies": {
+    "apify": "^3.7.2"
+  }
+}

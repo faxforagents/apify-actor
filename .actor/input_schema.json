@@ -1,0 +1,112 @@
+{
+  "title": "Send a fax (Fax for Agents)",
+  "description": "One fax through the Fax for Agents API. Pass exactly one of fileUrl, text or markdown. A test key (ffa_test_...) reaches the sandbox only and costs nothing; +15550000001 is delivered there.",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "apiKey": {
+      "title": "Fax for Agents API key",
+      "type": "string",
+      "description": "ffa_test_... reaches the sandbox only. ffa_live_... reaches the carrier and spends the prepaid wallet. Keys are created at app.faxforagents.com.",
+      "editor": "textfield",
+      "isSecret": true
+    },
+    "to": {
+      "title": "To",
+      "type": "string",
+      "description": "The destination fax number in E.164, for example +12025550123.",
+      "editor": "textfield",
+      "pattern": "^\\+[1-9][0-9]{6,14}$",
+      "prefill": "+15550000001"
+    },
+    "text": {
+      "title": "Text",
+      "type": "string",
+      "description": "Plain text rendered to a letter PDF. Pass this, markdown or fileUrl, not two.",
+      "editor": "textarea",
+      "prefill": "Hello from an Apify Actor."
+    },
+    "markdown": {
+      "title": "Markdown",
+      "type": "string",
+      "description": "Markdown (headings, lists, emphasis, code) rendered to PDF.",
+      "editor": "textarea"
+    },
+    "fileUrl": {
+      "title": "File URL",
+      "type": "string",
+      "description": "A URL of a PDF, PNG, JPG or TIFF the Actor downloads and sends. Up to 25 MB.",
+      "editor": "textfield"
+    },
+    "coverSubject": {
+      "title": "Cover sheet subject",
+      "type": "string",
+      "description": "Any cover field adds a billable cover page in front of the document.",
+      "editor": "textfield",
+      "sectionCaption": "Cover sheet"
+    },
+    "coverMessage": {
+      "title": "Cover sheet message",
+      "type": "string",
+      "editor": "textarea",
+      "description": "A short message on the cover sheet."
+    },
+    "coverToName": {
+      "title": "Cover sheet, to name",
+      "type": "string",
+      "editor": "textfield",
+      "description": "The recipient name on the cover sheet."
+    },
+    "coverFromName": {
+      "title": "Cover sheet, from name",
+      "type": "string",
+      "editor": "textfield",
+      "description": "The sender name on the cover sheet."
+    },
+    "approvalId": {
+      "title": "Approval id",
+      "type": "string",
+      "description": "An approved request bound to this send (apr_...), when the account needs a human approval for live sends.",
+      "editor": "textfield",
+      "sectionCaption": "Send options"
+    },
+    "clientReference": {
+      "title": "Client reference",
+      "type": "string",
+      "description": "Your own reference stored on the fax, up to 200 characters. Defaults to the Apify run id.",
+      "editor": "textfield"
+    },
+    "waitForDelivery": {
+      "title": "Wait for delivery",
+      "type": "boolean",
+      "description": "Poll until the fax is delivered, partial, failed or unknown. Off returns once the fax is queued.",
+      "default": true
+    },
+    "timeoutSeconds": {
+      "title": "Timeout (seconds)",
+      "type": "integer",
+      "description": "How long to wait for a terminal state before the run fails.",
+      "default": 600,
+      "minimum": 10,
+      "maximum": 3600
+    },
+    "failOn": {
+      "title": "Fail the run on",
+      "type": "string",
+      "description": "Comma-separated terminal states that fail the run. Empty never fails the run.",
+      "default": "failed,unknown",
+      "editor": "textfield"
+    },
+    "baseUrl": {
+      "title": "API base URL",
+      "type": "string",
+      "description": "Only change it to point the Actor at a test double.",
+      "default": "https://api.faxforagents.com",
+      "editor": "textfield"
+    }
+  },
+  "required": [
+    "apiKey",
+    "to"
+  ]
+}
