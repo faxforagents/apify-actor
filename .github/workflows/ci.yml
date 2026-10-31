@@ -49,9 +49,10 @@ jobs:
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
       - run: docker build -t faxforagents-send-a-fax .
-      - name: Without an input the run fails with the apiKey message, not a crash
+      - name: Without an input the run probes the API and exits as a check, not a crash
         run: |
           set +e
           out=$(docker run --rm faxforagents-send-a-fax 2>&1)
           echo "$out" | tail -5
-          echo "$out" | grep -q "apiKey is required"
+          echo "$out" | grep -q "No apiKey given"
+
