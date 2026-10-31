@@ -165,3 +165,18 @@ async function sendFax(opts) {
 }
 
 export { sendFax, ApiError, contentTypeOf, TERMINAL, VERSION };
+
+// Probe the API without a key. Used when the run has no apiKey: nothing is sent, nothing is charged.
+export async function checkApi({ baseUrl = 'https://api.faxforagents.com', fetchImpl = fetch } = {}) {
+  const base = String(baseUrl).replace(/\/$/, '');
+  const started = Date.now();
+  const res = await fetchImpl(`${base}/healthz`);
+  return {
+    mode: 'check',
+    api_base_url: base,
+    api_reachable: res.ok,
+    api_status: res.status,
+    latency_ms: Date.now() - started,
+    next_step: 'Create a key at https://app.faxforagents.com and put it in the apiKey input to send a fax.',
+  };
+}

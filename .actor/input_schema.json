@@ -7,7 +7,7 @@
     "apiKey": {
       "title": "Fax for Agents API key",
       "type": "string",
-      "description": "ffa_test_... reaches the sandbox only. ffa_live_... reaches the carrier and spends the prepaid wallet. Keys are created at app.faxforagents.com.",
+      "description": "ffa_test_... reaches the sandbox only. ffa_live_... reaches the carrier and spends the prepaid wallet. Keys are created at app.faxforagents.com. Leave it empty and the run only checks that the API is reachable, sends nothing and writes one check record.",
       "editor": "textfield",
       "isSecret": true
     },
@@ -106,7 +106,6 @@
     }
   },
   "required": [
-    "apiKey",
     "to"
   ]
 }

@@ -3,7 +3,7 @@ import crypto from 'node:crypto';
 import { after, before, beforeEach, test } from 'node:test';
 import { createRequire } from 'node:module';
 
-import { ApiError, sendFax } from '../src/fax.js';
+import { ApiError, sendFax, checkApi } from '../src/fax.js';
 
 const require = createRequire(import.meta.url);
 const fake = require('./fake-api.cjs');
@@ -62,4 +62,15 @@ test('API refusals carry the stable code, partial and failed are terminal', asyn
   api.state.polls = 0;
   api.state.outcome = 'failed';
   assert.equal((await sendFax({ ...base(), to: '+15550000001', text: 'a' })).fax.state, 'failed');
+});
+
+test('checkApi probes /healthz without a key and reports the outcome', async () => {
+  const calls = [];
+  const fetchImpl = async (url) => { calls.push(url); return { ok: true, status: 200 }; };
+  const r = await checkApi({ baseUrl: 'https://example.test/', fetchImpl });
+  assert.deepEqual(calls, ['https://example.test/healthz']);
+  assert.equal(r.mode, 'check');
+  assert.equal(r.api_reachable, true);
+  assert.equal(r.api_status, 200);
+  assert.ok(r.next_step.includes('app.faxforagents.com'));
 });

@@ -3,26 +3,90 @@
   "fields": {
     "type": "object",
     "properties": {
-      "fax_id": { "type": "string", "description": "The fax id (fax_...)." },
-      "quote_id": { "type": "string", "description": "The quote the fax was sent under." },
-      "document_id": { "type": "string", "description": "The prepared document." },
-      "to": { "type": "string", "description": "The destination in E.164." },
-      "state": { "type": "string", "description": "queued, active, delivered, partial, failed or unknown at the end of the run." },
-      "failure_code": { "type": ["string", "null"], "description": "The reason of a failed or partial send." },
-      "pages": { "type": "integer", "description": "Billable pages on the quote." },
-      "pages_sent": { "type": "integer", "description": "Pages the carrier reported as sent." },
-      "amount_micro": { "type": "integer", "description": "The quoted price in USD micro-units (39000 is $0.039)." },
-      "provider_ref": { "type": ["string", "null"], "description": "The carrier's reference once there is one." },
-      "evidence": { "type": ["object", "null"], "description": "What the carrier reported on a delivered or partial fax. Data from the carrier, not legal proof." },
-      "idempotency_key": { "type": "string", "description": "The key the send was queued under. The same key returns the same fax." }
+      "mode": {
+        "type": "string",
+        "description": "send when a fax was sent, check when the run had no apiKey and only probed the API."
+      },
+      "fax_id": {
+        "type": "string",
+        "description": "The fax id (fax_...)."
+      },
+      "quote_id": {
+        "type": "string",
+        "description": "The quote the fax was sent under."
+      },
+      "document_id": {
+        "type": "string",
+        "description": "The prepared document."
+      },
+      "to": {
+        "type": "string",
+        "description": "The destination in E.164."
+      },
+      "state": {
+        "type": "string",
+        "description": "queued, active, delivered, partial, failed or unknown at the end of the run."
+      },
+      "failure_code": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "The reason of a failed or partial send."
+      },
+      "pages": {
+        "type": "integer",
+        "description": "Billable pages on the quote."
+      },
+      "pages_sent": {
+        "type": "integer",
+        "description": "Pages the carrier reported as sent."
+      },
+      "amount_micro": {
+        "type": "integer",
+        "description": "The quoted price in USD micro-units (39000 is $0.039)."
+      },
+      "provider_ref": {
+        "type": [
+          "string",
+          "null"
+        ],
+        "description": "The carrier's reference once there is one."
+      },
+      "evidence": {
+        "type": [
+          "object",
+          "null"
+        ],
+        "description": "What the carrier reported on a delivered or partial fax. Data from the carrier, not legal proof."
+      },
+      "idempotency_key": {
+        "type": "string",
+        "description": "The key the send was queued under. The same key returns the same fax."
+      }
     },
-    "required": ["fax_id", "quote_id", "document_id", "to", "state", "pages", "pages_sent", "amount_micro", "idempotency_key"]
+    "required": [
+      "mode"
+    ]
   },
   "views": {
     "overview": {
       "title": "Faxes",
-      "transformation": { "fields": ["fax_id", "to", "state", "pages", "pages_sent", "amount_micro", "provider_ref"] },
-      "display": { "component": "table" }
+      "transformation": {
+        "fields": [
+          "mode",
+          "fax_id",
+          "to",
+          "state",
+          "pages",
+          "pages_sent",
+          "amount_micro",
+          "provider_ref"
+        ]
+      },
+      "display": {
+        "component": "table"
+      }
     }
   }
 }

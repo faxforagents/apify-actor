@@ -2,7 +2,7 @@
 // run when the fax ends in a state listed under failOn.
 import { Actor, log } from 'apify';
 
-import { ApiError, sendFax } from './fax.js';
+import { ApiError, checkApi, sendFax } from './fax.js';
 
 const MAX_FILE_BYTES = 25 * 1024 * 1024;
 
@@ -27,6 +27,15 @@ try {
   const input = (await Actor.getInput()) || {};
   const runId = process.env.APIFY_ACTOR_RUN_ID || 'local';
   const failOn = String(input.failOn ?? 'failed,unknown').split(',').map((s) => s.trim()).filter(Boolean);
+  if (!input.apiKey) {
+    // No key: probe the API and stop. This is what Apify's daily Store test runs, and what a person sees
+    // when they press Start before adding a key. Nothing is sent and nothing is charged.
+    const record = await checkApi({ baseUrl: input.baseUrl || undefined });
+    await Actor.pushData(record);
+    await Actor.setValue('OUTPUT', record);
+    if (!record.api_reachable) await Actor.fail(`The API answered HTTP ${record.api_status} on /healthz.`);
+    else await Actor.exit('No apiKey given. The API is reachable. Add a key to send a fax.');
+  }
   const file = input.fileUrl ? await fetchFile(input.fileUrl) : undefined;
   const result = await sendFax({
     apiKey: input.apiKey,
@@ -45,6 +54,7 @@ try {
   });
   const { document, quote, fax, idempotencyKey } = result;
   const record = {
+    mode: 'send',
     fax_id: fax.id,
     quote_id: quote.id,
     document_id: document.id,
