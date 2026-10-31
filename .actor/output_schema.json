@@ -4,6 +4,7 @@
   "description": "One dataset item per run with the fax id, the final carrier state, pages sent and the quoted price.",
   "properties": {
     "faxes": {
+      "type": "string",
       "title": "Faxes",
       "description": "The fax record this run sent: id, destination, state, pages, price and the carrier's evidence.",
       "template": "{{links.apiDefaultDatasetUrl}}/items"
