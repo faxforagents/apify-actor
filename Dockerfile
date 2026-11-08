@@ -1,5 +1,5 @@
 # The image indexers and the Apify platform build. Node 20, no browser.
-FROM apify/actor-node:20
+FROM apify/actor-node:24
 
 COPY package*.json ./
 RUN npm --quiet set progress=false \
