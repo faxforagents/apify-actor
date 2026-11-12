@@ -17,7 +17,7 @@ async function fetchFile(url) {
   const res = await fetch(url, { redirect: 'follow' });
   if (!res.ok) throw new Error(`fileUrl answered HTTP ${res.status}.`);
   const bytes = new Uint8Array(await res.arrayBuffer());
-  if (bytes.byteLength > MAX_FILE_BYTES) throw new Error('The file is over 25 MB.');
+  if (bytes.byteLength > MAX_FILE_BYTES) throw new Error('The file is over 25 MiB.');
   const name = parsed.pathname.split('/').filter(Boolean).pop() || 'document.pdf';
   return { bytes, filename: /\.(pdf|png|jpe?g|tiff?)$/i.test(name) ? name : `${name}.pdf` };
 }

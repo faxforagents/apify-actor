@@ -35,7 +35,7 @@
     "fileUrl": {
       "title": "File URL",
       "type": "string",
-      "description": "A URL of a PDF, PNG, JPG or TIFF the Actor downloads and sends. Up to 25 MB.",
+      "description": "A URL of a PDF, PNG, JPG or TIFF the Actor downloads and sends. Up to 25 MiB.",
       "editor": "textfield"
     },
     "coverSubject": {

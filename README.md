@@ -39,7 +39,7 @@ dataset and to the `OUTPUT` key.
 |---|---|---|---|
 | `apiKey` | no | | The Fax for Agents API key, stored as a secret input. Empty means check mode: the run probes the API, sends nothing and writes one `mode: check` record |
 | `to` | yes | | Destination in E.164, for example `+12025550123` |
-| `fileUrl` | one of three | | URL of a PDF, PNG, JPG or TIFF, up to 25 MB |
+| `fileUrl` | one of three | | URL of a PDF, PNG, JPG or TIFF, up to 25 MiB ([limits](https://faxforagents.com/docs/limits/)) |
 | `text` | one of three | | Plain text, rendered to a letter PDF |
 | `markdown` | one of three | | Markdown, rendered to PDF |
 | `coverSubject`, `coverMessage`, `coverToName`, `coverFromName` | no | | Fields of an optional cover sheet. Any of them adds a billable cover page |
