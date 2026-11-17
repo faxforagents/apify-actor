@@ -96,7 +96,7 @@ example `error_code=insufficient_balance`. When the quote says a human approval 
 ## Prices
 
 Price card launch-v3 is effective from 2026-11-12. $0.039 per page sent, $0.019 per page received. $2 per
-number per month, $19 per month for the Agent workspace. Sandbox pages cost 0. Apify charges its own
+number per month, $19 per month for the Agent workspace. Pages sent in test mode cost 0. Apify charges its own
 compute for the run.
 
 ## Working on this repository
