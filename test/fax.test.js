@@ -3,7 +3,7 @@ import crypto from 'node:crypto';
 import { after, before, beforeEach, test } from 'node:test';
 import { createRequire } from 'node:module';
 
-import { ApiError, sendFax, checkApi } from '../src/fax.js';
+import { ApiError, sendFax, checkApi, trimTrailingSlashes } from '../src/fax.js';
 
 const require = createRequire(import.meta.url);
 const fake = require('./fake-api.cjs');
@@ -29,6 +29,24 @@ test('text is prepared, quoted, queued under an idempotency key and polled to de
   assert.equal(api.calls[2].headers['idempotency-key'], `apify:${api.QUOTE}`);
   assert.equal(r.fax.state, 'delivered');
   assert.equal(r.quote.amount_micro, 39000);
+});
+
+test('the base URL drops its trailing slashes and nothing else', async () => {
+  assert.equal(trimTrailingSlashes('https://api.example.test///'), 'https://api.example.test');
+  assert.equal(trimTrailingSlashes('https://api.example.test/v1/'), 'https://api.example.test/v1');
+  assert.equal(trimTrailingSlashes('https://api.example.test'), 'https://api.example.test');
+  assert.equal(trimTrailingSlashes('///'), '');
+  await sendFax({ ...base(), baseUrl: `${api.url}//`, to: '+15550000001', text: 'Hello from Apify.' });
+  assert.equal(api.calls[0].path, '/v1/documents');
+});
+
+test('the base URL trim takes linear time on a long run of slashes that does not end the string', () => {
+  // `/\/+$/` took about 16 s on this input (CodeQL js/polynomial-redos)
+  const long = `https://api.example.test${'/'.repeat(100_000)}x`;
+  const started = performance.now();
+  assert.equal(trimTrailingSlashes(long), long);
+  assert.equal(trimTrailingSlashes(`${long}${'/'.repeat(100_000)}`), long);
+  assert.ok(performance.now() - started < 1_000);
 });
 
 test('downloaded bytes go through the signed upload with their sha256', async () => {
@@ -69,9 +87,13 @@ test('checkApi probes /healthz without a key and reports the outcome', async () 
   const fetchImpl = async (url) => { calls.push(url); return { ok: true, status: 200 }; };
   const r = await checkApi({ baseUrl: 'https://example.test/', fetchImpl });
   assert.deepEqual(calls, ['https://example.test/healthz']);
+  assert.equal(r.api_base_url, 'https://example.test');
   assert.equal(r.mode, 'check');
   assert.equal(r.api_reachable, true);
   assert.equal(r.api_status, 200);
+  calls.length = 0;
+  assert.equal((await checkApi({ baseUrl: 'https://example.test///', fetchImpl })).api_base_url, 'https://example.test');
+  assert.deepEqual(calls, ['https://example.test/healthz']);
   // the whole sentence, not a substring check on the host (CodeQL js/incomplete-url-substring-sanitization)
   assert.equal(r.next_step, 'Create a key at https://app.faxforagents.com and put it in the apiKey input to send a fax.');
 });
