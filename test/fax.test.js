@@ -72,5 +72,6 @@ test('checkApi probes /healthz without a key and reports the outcome', async () 
   assert.equal(r.mode, 'check');
   assert.equal(r.api_reachable, true);
   assert.equal(r.api_status, 200);
-  assert.ok(r.next_step.includes('app.faxforagents.com'));
+  // the whole sentence, not a substring check on the host (CodeQL js/incomplete-url-substring-sanitization)
+  assert.equal(r.next_step, 'Create a key at https://app.faxforagents.com and put it in the apiKey input to send a fax.');
 });
