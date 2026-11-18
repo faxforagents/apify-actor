@@ -44,8 +44,16 @@ function contentTypeOf(filename) {
   return CONTENT_TYPES[path.extname(filename).toLowerCase()] || 'application/pdf';
 }
 
+// The URL without its trailing slashes. A scan, not `/\/+$/`: that regex took 16 s on 100,000 slashes followed
+// by another character, as it retries from every slash (CodeQL js/polynomial-redos, 2026-11-18).
+function trimTrailingSlashes(url) {
+  let end = url.length;
+  while (end > 0 && url.charCodeAt(end - 1) === 47) end -= 1;
+  return url.slice(0, end);
+}
+
 function makeApi({ baseUrl, apiKey, fetchImpl }) {
-  const base = baseUrl.replace(/\/+$/, '');
+  const base = trimTrailingSlashes(baseUrl);
   const doFetch = fetchImpl || globalThis.fetch;
   return async function request(method, url, { json, params, headers, body } = {}) {
     const q = new URLSearchParams();
@@ -164,11 +172,11 @@ async function sendFax(opts) {
   return { document, quote, fax: job, idempotencyKey: idem };
 }
 
-export { sendFax, ApiError, contentTypeOf, TERMINAL, VERSION };
+export { sendFax, ApiError, contentTypeOf, trimTrailingSlashes, TERMINAL, VERSION };
 
 // Probe the API without a key. Used when the run has no apiKey: nothing is sent, nothing is charged.
 export async function checkApi({ baseUrl = 'https://api.faxforagents.com', fetchImpl = fetch } = {}) {
-  const base = String(baseUrl).replace(/\/$/, '');
+  const base = trimTrailingSlashes(String(baseUrl));
   const started = Date.now();
   const res = await fetchImpl(`${base}/healthz`);
   return {
