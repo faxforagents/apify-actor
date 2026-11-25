@@ -20,6 +20,6 @@
     "test:local": "node test/run-local.js"
   },
   "dependencies": {
-    "apify": "^3.7.2"
+    "apify": "^3.8.0"
   }
 }
